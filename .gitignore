@@ -1,24 +1,56 @@
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 .DS_Store
+Thumbs.db
+
+# Environment files
 .env
-.env.backup
-.env.production
-.phpactor.json
-.phpunit.result.cache
+.env.*
+!.env.example
+!.env.railway.example
+auth.json
+
+# Dependency directories
+/vendor
+/node_modules
+
+# Build artifacts
+/public/build
+/public/hot
+
+# Storage and cache
+/public/storage
+/storage/*.key
+/storage/pail
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+!/storage/framework/cache/.gitignore
+!/storage/framework/sessions/.gitignore
+!/storage/framework/testing/.gitignore
+
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitignore
+
+# IDE / editor files
 /.fleet
 /.idea
 /.nova
 /.phpunit.cache
 /.vscode
 /.zed
-/auth.json
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
+.phpactor.json
+.phpunit.result.cache
+
+# Local database files
+/database/*.sqlite
+
+# Local deployment metadata
+/.railway
+
 Homestead.json
 Homestead.yaml
-Thumbs.db
