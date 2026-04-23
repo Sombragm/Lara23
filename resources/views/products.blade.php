@@ -5,33 +5,24 @@
         </h2>
     </x-slot>
 
-    <div class="py-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-
-        {{-- Mensajes de error de validación --}}
-        @if ($errors->any())
-            <div class="bg-red-50 border border-red-300 text-red-700 rounded-lg px-4 py-3 text-sm">
-                <ul class="list-disc list-inside space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    <div class="py-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
         {{-- Formulario --}}
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+        <div class="mt-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm ring-1 ring-gray-100 dark:ring-gray-700 p-7 sm:p-8">
             @if(isset($productToEdit))
-                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4">Editar Producto</h3>
-                <form action="{{ route('productos.update', $productToEdit->id) }}" method="POST" class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-6">Editar Producto</h3>
+                <form action="{{ route('productos.update', $productToEdit->id) }}" method="POST" class="space-y-6">
                     @csrf
                     @method('PUT')
             @else
-                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4">Nuevo Producto</h3>
-                <form action="{{ route('productos.store') }}" method="POST" class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-6">Nuevo Producto</h3>
+                <form action="{{ route('productos.store') }}" method="POST" class="space-y-6">
                     @csrf
             @endif
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input type="hidden" name="page" value="{{ request('page', $products->currentPage()) }}">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Nombre</label>
                         <input type="text" name="name"
@@ -82,14 +73,17 @@
                     </div>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="flex flex-wrap gap-3">
                     <button type="submit"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition">
+                        class="inline-flex items-center bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-5 py-2 rounded-lg shadow-sm transition">
                         {{ isset($productToEdit) ? 'Actualizar' : 'Guardar' }}
                     </button>
                     @if(isset($productToEdit))
-                        <a href="{{ route('productos') }}"
-                            class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-medium px-5 py-2 rounded-lg transition">
+                        <a href="{{ route('productos', ['page' => request('page', $products->currentPage())]) }}"
+                            class="inline-flex items-center text-sm font-semibold px-5 py-2 rounded-lg transition"
+                            style="background-color:#475569;color:#ffffff;"
+                            onmouseover="this.style.backgroundColor='#334155'"
+                            onmouseout="this.style.backgroundColor='#475569'">
                             Cancelar
                         </a>
                     @endif
@@ -98,32 +92,32 @@
         </div>
 
         {{-- Tabla --}}
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm ring-1 ring-gray-100 dark:ring-gray-700" style="margin-top:2.75rem;">
             <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
                 <h3 class="text-base font-semibold text-gray-700 dark:text-gray-200">Listado de Productos</h3>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
+                <table class="w-full min-w-[980px] text-sm">
                     <thead class="bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wide">
                         <tr>
-                            <th class="px-6 py-3 text-left">ID</th>
-                            <th class="px-6 py-3 text-left">Nombre</th>
-                            <th class="px-6 py-3 text-left">Descripción</th>
-                            <th class="px-6 py-3 text-right">Precio</th>
-                            <th class="px-6 py-3 text-left">Categoría</th>
-                            <th class="px-6 py-3 text-center">Acciones</th>
+                            <th class="px-6 py-4 text-left">ID</th>
+                            <th class="px-6 py-4 text-left">Nombre</th>
+                            <th class="px-6 py-4 text-left">Descripción</th>
+                            <th class="px-6 py-4 text-right">Precio</th>
+                            <th class="px-6 py-4 text-left">Categoría</th>
+                            <th class="px-6 py-4 text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                         @forelse($products as $product)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition">
-                            <td class="px-6 py-3 text-gray-500 dark:text-gray-400">{{ $product->id }}</td>
-                            <td class="px-6 py-3 font-medium text-gray-800 dark:text-gray-100">{{ $product->name }}</td>
-                            <td class="px-6 py-3 text-gray-600 dark:text-gray-300 max-w-xs truncate">{{ $product->description ?? '—' }}</td>
-                            <td class="px-6 py-3 text-right text-gray-700 dark:text-gray-200 font-mono">
+                        <tr class="hover:bg-slate-200 dark:hover:bg-slate-700/80 transition-colors duration-150">
+                            <td class="px-6 py-4 text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ $product->id }}</td>
+                            <td class="px-6 py-4 font-medium text-gray-800 dark:text-gray-100">{{ $product->name }}</td>
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-300 max-w-md whitespace-normal break-words">{{ $product->description ?? '—' }}</td>
+                            <td class="px-6 py-4 text-right text-gray-700 dark:text-gray-200 font-mono whitespace-nowrap">
                                 ${{ number_format($product->price, 2) }}
                             </td>
-                            <td class="px-6 py-3">
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 @if($product->category)
                                     <span class="inline-block bg-indigo-100 text-indigo-700 text-xs font-medium px-2.5 py-1 rounded-full">
                                         {{ $product->category->name }}
@@ -137,18 +131,24 @@
                                     <span class="text-gray-400 dark:text-gray-500 text-xs">Sin categoría</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-3 text-center">
+                            <td class="px-6 py-4 text-center whitespace-nowrap">
                                 <div class="flex justify-center gap-2">
-                                    <a href="{{ route('productos.edit', $product->id) }}"
-                                        class="bg-amber-100 hover:bg-amber-200 text-amber-700 text-xs font-medium px-3 py-1.5 rounded-md transition">
+                                    <a href="{{ route('productos.edit', ['id' => $product->id, 'page' => $products->currentPage()]) }}"
+                                        class="inline-flex items-center text-white text-xs font-semibold px-3 py-1.5 rounded-md transition"
+                                        style="background-color:#d97706;"
+                                        onmouseover="this.style.backgroundColor='#b45309'"
+                                        onmouseout="this.style.backgroundColor='#d97706'">
                                         Editar
                                     </a>
                                     <form action="{{ route('productos.destroy', $product->id) }}" method="POST"
-                                          onsubmit="return confirm('¿Eliminar el producto «{{ $product->name }}»?')">
+                                        data-confirm-delete="true"
+                                        data-confirm-title="Eliminar producto"
+                                        data-confirm-text="¿Eliminar el producto «{{ $product->name }}»? Esta accion no se puede deshacer.">
                                         @csrf
                                         @method('DELETE')
+                                        <input type="hidden" name="page" value="{{ $products->currentPage() }}">
                                         <button type="submit"
-                                            class="bg-red-100 hover:bg-red-200 text-red-700 text-xs font-medium px-3 py-1.5 rounded-md transition">
+                                            class="inline-flex items-center bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-3 py-1.5 rounded-md transition">
                                             Eliminar
                                         </button>
                                     </form>
@@ -164,6 +164,9 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
+                {{ $products->onEachSide(1)->links() }}
             </div>
         </div>
 

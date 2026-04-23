@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use App\Models\Category;
 use App\Models\Product;
 
@@ -22,7 +23,7 @@ class CtrlForms extends Controller
 
         Category::create($data);
 
-        return redirect()->route('categorias');
+        return redirect()->route('categorias')->with('success', 'Categoria creada correctamente.');
     }
 
     public function editCategoria($id)
@@ -42,18 +43,27 @@ class CtrlForms extends Controller
         $category = Category::findOrFail($id);
         $category->update($data);
 
-        return redirect()->route('categorias');
+        return redirect()->route('categorias')->with('success', 'Categoria actualizada correctamente.');
     }
 
     public function destroyCategoria($id)
     {
         $category = Category::findOrFail($id);
-        $category->delete();
-        return redirect()->route('categorias');
+        try {
+            $category->delete();
+            return redirect()->route('categorias')->with('success', 'Categoria eliminada correctamente.');
+        } catch (QueryException $e) {
+            return redirect()
+                ->route('categorias')
+                ->with('error', 'No se puede eliminar la categoria porque esta enlazada a uno o mas productos.');
+        }
     }
 
     public function Productos(){
-        $products = Product::all();
+        $products = Product::with('category')
+            ->orderBy('id', 'asc')
+            ->paginate(50)
+            ->withQueryString();
         $categories = Category::all();
         return view('products')->with(compact('products', 'categories'));
     }
@@ -75,12 +85,17 @@ class CtrlForms extends Controller
 
         Product::create($data);
 
-        return redirect()->route('productos');
+        return redirect()->route('productos', [
+            'page' => $request->input('page', 1),
+        ])->with('success', 'Producto creado correctamente.');
     }
 
-    public function editProduct($id)
+    public function editProduct(Request $request, $id)
     {
-        $products = Product::all();
+        $products = Product::with('category')
+            ->orderBy('id', 'asc')
+            ->paginate(50)
+            ->withQueryString();
         $categories = Category::all();
         $productToEdit = Product::findOrFail($id);
         return view('products')->with(compact('products', 'categories', 'productToEdit'));
@@ -106,13 +121,17 @@ class CtrlForms extends Controller
         $product = Product::findOrFail($id);
         $product->update($data);
 
-        return redirect()->route('productos');
+        return redirect()->route('productos', [
+            'page' => $request->input('page', 1),
+        ])->with('success', 'Producto actualizado correctamente.');
     }
 
-    public function destroyProduct($id)
+    public function destroyProduct(Request $request, $id)
     {
         $product = Product::findOrFail($id);
         $product->delete();
-        return redirect()->route('productos');
+        return redirect()->route('productos', [
+            'page' => $request->input('page', 1),
+        ])->with('success', 'Producto eliminado correctamente.');
     }
 }
