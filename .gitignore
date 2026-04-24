@@ -9,17 +9,11 @@ Thumbs.db
 # Environment files
 .env
 .env.*
-!.env.example
-!.env.railway.example
 auth.json
 
 # Dependency directories
 /vendor
 /node_modules
-
-# Build artifacts
-/public/build
-/public/hot
 
 # Storage and cache
 /public/storage

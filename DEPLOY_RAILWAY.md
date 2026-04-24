@@ -3,7 +3,7 @@
 Este proyecto incluye los archivos base para desplegar en Railway:
 
 - `railway.toml`
-- `.env.railway.example`
+- `.env.dist` (solo para desarrollo local)
 
 ## 1) Crear el proyecto en Railway
 
@@ -14,6 +14,8 @@ Este proyecto incluye los archivos base para desplegar en Railway:
 ## 2) Variables de entorno
 
 Configura en Railway (Environment Variables) como minimo:
+
+Nota: no subas archivos `.env.example` al repo para evitar que Railway intente usarlos como base de variables.
 
 - `APP_ENV=production`
 - `APP_DEBUG=false`
