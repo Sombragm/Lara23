@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $categories = Category::factory()->count(7)->create();
 
         $categories->each(function ($category) {
-            Product::factory()->count(30)->create([
+            Product::factory()->count(15)->create([
                 'category_id' => $category->id,
             ]);
         });
